@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#D89B18">
+  <meta name="description" content="YANG MULIA POS — Kasir & Manajemen Stok Batagor dan Siomay Ikan">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./assets/icon-192.png">
+  <link rel="stylesheet" href="./styles/main.css">
+  <title>YANG MULIA POS</title>
+</head>
+<body>
+  <div id="app">
+    <section id="loginView" class="auth-shell">
+      <div class="auth-card">
+        <img class="brand-logo" src="./assets/logo.jpg" alt="YANG MULIA">
+        <div class="brand-title">YANG MULIA POS</div>
+        <div class="brand-subtitle">Batagor & Siomay Ikan</div>
+        <form id="loginForm">
+          <label>Email<input id="loginEmail" type="email" autocomplete="username" required placeholder="admin@contoh.com"></label>
+          <label>Password<input id="loginPassword" type="password" autocomplete="current-password" required placeholder="••••••••"></label>
+          <button class="btn btn-gold btn-full" type="submit">MASUK</button>
+          <div id="loginStatus" class="status"></div>
+        </form>
+        <div class="offline-note">PWA • Offline-ready • Supabase</div>
+      </div>
+    </section>
+
+    <section id="appView" class="app-shell hidden">
+      <aside class="sidebar">
+        <div class="side-brand">
+          <img src="./assets/icon-192.png" alt="">
+          <div><strong>YANG MULIA</strong><span>POS</span></div>
+        </div>
+        <nav id="mainNav">
+          <button data-view="dashboard" class="nav-item active">⌂ <span>Dashboard</span></button>
+          <button data-view="pos" class="nav-item">▣ <span>Kasir</span></button>
+          <button data-view="products" class="nav-item">▤ <span>Produk</span></button>
+          <button data-view="inventory" class="nav-item">◫ <span>Stok</span></button>
+          <button data-view="sales" class="nav-item">▥ <span>Transaksi</span></button>
+        </nav>
+        <div class="side-bottom">
+          <div id="syncBadge" class="sync-badge">● Online</div>
+          <button id="logoutBtn" class="nav-item">⇥ <span>Keluar</span></button>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar">
+          <div class="mobile-brand"><img src="./assets/icon-192.png" alt=""> <strong>YANG MULIA</strong></div>
+          <button id="installBtn" class="btn btn-outline hidden">Install App</button>
+          <div class="user-chip"><span id="userName">User</span><span id="userRole">KASIR</span></div>
+        </header>
+
+        <section id="dashboardView" class="view">
+          <div class="page-head"><div><h1>Dashboard</h1><p>Ringkasan operasional hari ini.</p></div></div>
+          <div class="cards">
+            <article class="metric"><span>Penjualan Hari Ini</span><strong id="mSales">Rp 0</strong></article>
+            <article class="metric"><span>Transaksi</span><strong id="mTransactions">0</strong></article>
+            <article class="metric"><span>Produk</span><strong id="mProducts">0</strong></article>
+            <article class="metric danger"><span>Stok Menipis</span><strong id="mLowStock">0</strong></article>
+          </div>
+          <div class="grid-2">
+            <section class="panel"><div class="panel-head"><h2>Stok Menipis</h2></div><div id="lowStockList" class="list"></div></section>
+            <section class="panel"><div class="panel-head"><h2>Transaksi Terbaru</h2></div><div id="recentSales" class="list"></div></section>
+          </div>
+        </section>
+
+        <section id="posView" class="view hidden">
+          <div class="page-head"><div><h1>Kasir</h1><p>Transaksi tetap dapat dibuat saat offline.</p></div><div id="posMode" class="mode-pill">ONLINE</div></div>
+          <div class="pos-layout">
+            <section class="panel products-panel">
+              <div class="toolbar">
+                <input id="productSearch" placeholder="Cari produk...">
+                <select id="categoryFilter"><option value="">Semua kategori</option></select>
+              </div>
+              <div id="productGrid" class="product-grid"></div>
+            </section>
+            <section class="panel cart-panel">
+              <div class="panel-head"><h2>Pesanan</h2><button id="clearCart" class="icon-btn">×</button></div>
+              <div id="cartItems" class="cart-items"></div>
+              <div class="cart-summary">
+                <div><span>Subtotal</span><strong id="cartSubtotal">Rp 0</strong></div>
+                <div><span>Diskon</span><input id="cartDiscount" type="number" min="0" value="0"></div>
+                <div class="total"><span>Total</span><strong id="cartTotal">Rp 0</strong></div>
+                <button id="payBtn" class="btn btn-gold btn-full">BAYAR</button>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section id="productsView" class="view hidden">
+          <div class="page-head"><div><h1>Produk</h1><p>CRUD produk dan kategori.</p></div><button id="addProductBtn" class="btn btn-gold">+ Produk</button></div>
+          <section class="panel"><div class="table-wrap"><table><thead><tr><th>Produk</th><th>Kategori</th><th>Harga</th><th>Stok</th><th>Min.</th><th>Status</th><th></th></tr></thead><tbody id="productTable"></tbody></table></div></section>
+        </section>
+
+        <section id="inventoryView" class="view hidden">
+          <div class="page-head"><div><h1>Stok</h1><p>Pergerakan stok dan koreksi sederhana.</p></div></div>
+          <section class="panel"><div class="table-wrap"><table><thead><tr><th>Produk</th><th>Stok</th><th>Minimum</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="stockTable"></tbody></table></div></section>
+        </section>
+
+        <section id="salesView" class="view hidden">
+          <div class="page-head"><div><h1>Transaksi</h1><p>Riwayat transaksi tersimpan lokal dan di Supabase.</p></div></div>
+          <section class="panel"><div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Waktu</th><th>Total</th><th>Metode</th><th>Status</th></tr></thead><tbody id="salesTable"></tbody></table></div></section>
+        </section>
+      </main>
+    </section>
+  </div>
+
+  <div id="modalRoot"></div>
+  <div id="toastRoot" class="toast-root"></div>
+
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>
